@@ -1,6 +1,7 @@
 use Mojolicious::Lite;
 use POSIX qw(strftime);
 
+
 my @status_label = (
 	"Id",
 	"Data",
@@ -10,63 +11,63 @@ my @status_label = (
 	"Up time",
 );
 
-my @dev_0_map = (
+my @dev_module1_map = (
 	{"label" => "Id"       , "value" => "-" },
 	{"label" => "Data"     , "value" => "-" },
 	{"label" => "Ora"      , "value" => "-" },
 	{"label" => "LQI"      , "value" => "-" },
 	{"label" => "RSSI"     , "value" => "-" },
 	{"label" => "Up Time"  , "value" => "-" },
+	{"label" => "Label"    , "value" => "-" },
 	{"label" => "CPU Temp" , "value" => "-" },
 	{"label" => "CPU Vint" , "value" => "-" },
 	{"label" => "Temp1"    , "value" => "-" },
 	{"label" => "Temp2"    , "value" => "-" },
+	{"label" => "Light"    , "value" => "-" },
 );
 
-my @dev_1_map = (
+my @dev_default_map = (
 	{"label" => "Id"       , "value" => "-" },
 	{"label" => "Data"     , "value" => "-" },
 	{"label" => "Ora"      , "value" => "-" },
 	{"label" => "LQI"      , "value" => "-" },
 	{"label" => "RSSI"     , "value" => "-" },
+	{"label" => "Label"    , "value" => "-" },
 	{"label" => "Up Time"  , "value" => "-" },
 	{"label" => "CPU Temp" , "value" => "-" },
 	{"label" => "CPU Vint" , "value" => "-" },
-	{"label" => "Temp1"    , "value" => "-" },
-	{"label" => "Temp2"    , "value" => "-" },
 );
 
-my @dev_2_map = (
+my @dev_master_map = (
 	{"label" => "Id"       , "value" => "-" },
 	{"label" => "Data"     , "value" => "-" },
 	{"label" => "Ora"      , "value" => "-" },
 	{"label" => "LQI"      , "value" => "-" },
 	{"label" => "RSSI"     , "value" => "-" },
+	{"label" => "Label"    , "value" => "-" },
 	{"label" => "Up Time"  , "value" => "-" },
 	{"label" => "CPU Temp" , "value" => "-" },
 	{"label" => "CPU Vint" , "value" => "-" },
 	{"label" => "Temp1"    , "value" => "-" },
-	{"label" => "Temp2"    , "value" => "-" },
-);
-
-my @dev_3_map = (
-	{"label" => "Id"       , "value" => "-" },
-	{"label" => "Data"     , "value" => "-" },
-	{"label" => "Ora"      , "value" => "-" },
-	{"label" => "LQI"      , "value" => "-" },
-	{"label" => "RSSI"     , "value" => "-" },
-	{"label" => "Up Time"  , "value" => "-" },
-	{"label" => "CPU Temp" , "value" => "-" },
-	{"label" => "CPU Vint" , "value" => "-" },
-	{"label" => "Temp1"    , "value" => "-" },
-	{"label" => "Temp2"    , "value" => "-" },
 );
 
 my @dev_map_available = (
-	\@dev_0_map,
-	\@dev_1_map,
-	\@dev_2_map,
-	\@dev_3_map,
+	\@dev_master_map,   #Master 0
+	\@dev_default_map,  # Module 1
+	\@dev_default_map,  # Module 2
+	\@dev_default_map,  # Module 3
+	\@dev_default_map,  # Module 4
+	\@dev_default_map,  # Module 5
+	\@dev_default_map,  # Module 6
+	\@dev_default_map,  # Module 7
+	\@dev_module1_map,  # Module 8
+	\@dev_default_map,  # Module 9
+	\@dev_default_map,  # Module 10
+	\@dev_default_map,  # Module 11
+	\@dev_default_map,  # Module 12
+	\@dev_default_map,  # Module 13
+	\@dev_default_map,  # Module 14
+	\@dev_default_map,  # Module 15
 );
 
 # Simple plain text response
