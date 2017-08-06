@@ -97,13 +97,15 @@ get '/' => sub {
 		if (open(FILE, "<", $n)) {
 			while (<FILE>) {
 				my ($id, $val);
+                $id = -1;
+                $val = -1;
 				# Save device id and all log data of it
-				if (/^(\d+);/) {
+				if (/\$(\d+);/) {
 					$id = $1;
 					$val = $_;
-				}
+                }
 				#Check if current id is valid, and we have valid label map
-				if ($id < $#dev_map_available) {
+				if (($id >= 0) && ($id < $#dev_map_available)) {
 					$d{$id} = $val;
 				} else {
 					print "Error id=$id not valid, discard it! (max $#dev_map_available)\n";
@@ -120,22 +122,22 @@ get '/' => sub {
 	my @dev_map = ();
 	my @status_dev = ();
 	foreach (sort keys %d) {
-		my @data = split ';', $d{$_};
+		my $line = $d{$_};
+		$line =~ s/^\s+|\s+$//g;
+		my @row = split '\$', $line;
+		my @data = split ';', $row[1];
 		my $dev_id = $data[0];
 		my $ref = $dev_map_available[$dev_id];
 		push @dev_map, $ref;
 		my @d = ();
-
 		for my $i (0..$#data) {
 			#Break if we not have more label
 			last if $i > $#{$ref};
-
 			$ref->[$i]{'value'} = $data[$i];
 			push @d, $data[$i] if $i <= $#status_label;
 		}
 		push @status_dev, [ @d ];
 	}
-
 	$self->stash(dev_map => \@dev_map);
 	$self->stash(status_label => \@status_label);
 	$self->stash(status_dev => \@status_dev);
