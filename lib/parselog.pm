@@ -14,9 +14,9 @@ $VERSION     = 1.00;
 %EXPORT_TAGS = ();
 
 sub selectlog {
-	my $data_start = shift || strftime "%Y%d%m", localtime;;
-	my $data_stop  = shift || strftime "%Y%d%m", localtime;
-	#my $data_file = basename($file, ",log");
+	my $mode = shift || "last";
+	my $start = shift || strftime "%Y%d%m", localtime;;
+	my $stop  = shift || strftime "%Y%d%m", localtime;
 	my $dir_path =  "data";
 
 	my @fileList;
@@ -26,7 +26,18 @@ sub selectlog {
 			push @fileList, catfile($dir_path, $file);
 		}
 	}
-	return @fileList;
+
+	@fileList = sort @fileList;
+	if ($mode eq "last") {
+		return $fileList[-1] || ();
+	}
+
+	my @filter;
+	foreach my $item (@fileList) {
+		my $fd = basename($item, ",log");
+		push @filter, $item if (($start >= $fd) && ($fd <= $stop));
+	}
+	return @filter;
 }
 
 sub parselog {
@@ -47,7 +58,7 @@ sub parselog {
 				  if (/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})/) {
 					  # Save in hash all line that refer to a single module
 					  # in following format:
-					  # Addres -> [ 
+					  # Addres -> [
 					  #		[ date, time, measures.. ]
 					  #		[ date, time, measures.. ]
 					  #		...
