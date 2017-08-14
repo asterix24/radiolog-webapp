@@ -88,71 +88,27 @@ get '/' => sub {
 	#$self->stash(ua => $self->req->headers->user_agent);
 	#
 
-	$log->info("Prova\n");
+	$log->info("Home\n");
 
-	# Get the last log file
-	my @log_file_list = ();
-	my $dir =  "data";
-	if (opendir(DIR, $dir)) {
-		while (my $file = readdir(DIR)) {
-			# Use a regular expression to ignore files beginning with a period
-			next if ($file =~ m/^\./);
-
-			push @log_file_list, $dir."/".$file;
-		}
-		closedir(DIR);
-		@log_file_list = sort @log_file_list;
-	}
-
-	my %d = ();
-	if (@log_file_list) {
-		my $n = $log_file_list[$#log_file_list];
-		print "current log file: $n\n";
-		# Find lastest devices update.
-		if (open(FILE, "<", $n)) {
-			while (<FILE>) {
-				my ($id, $val);
-                $id = -1;
-                $val = -1;
-				# Save device id and all log data of it
-				if (/\$(\d+);/) {
-					$id = $1;
-					$val = $_;
-                }
-				#Check if current id is valid, and we have valid label map
-				if (($id >= 0) && ($id < $#dev_map_available)) {
-					$d{$id} = $val;
-				} else {
-					print "Error id=$id not valid, discard it! (max $#dev_map_available)\n";
-					last;
-				}
-			}
-			close FILE;
-		} else {
-			print "Error on $n: $!\n";
-		}
-	}
+	my @filelist = selectlog();
+	my %database = parselog(@filelist);
 
 	# Fill data to render.
 	my @dev_map = ();
 	my @status_dev = ();
-	foreach (sort keys %d) {
-		my $line = $d{$_};
-		$line =~ s/^\s+|\s+$//g;
-		my @row = split '\$', $line;
-		my @data = split ';', $row[1];
-		my $dev_id = $data[0];
-		my $ref = $dev_map_available[$dev_id];
-		push @dev_map, $ref;
-		my @d = ();
-		for my $i (0..$#data) {
-			#Break if we not have more label
-			last if $i > $#{$ref};
-			$ref->[$i]{'value'} = $data[$i];
-			push @d, $data[$i] if $i <= $#status_label;
+	foreach my $id (keys %database) {
+		my @l;
+		foreach ($database{$id}) {
+			push @l, $id;
+			foreach (@{$_}[-1]) {
+				foreach (@{$_}) {
+				  push @l, $_ if $_;
+				}
+			}
 		}
-		push @status_dev, [ @d ];
+		push @dev_map, [@l];
 	}
+
 	$self->stash(dev_map => \@dev_map);
 	$self->stash(status_label => \@status_label);
 	$self->stash(status_dev => \@status_dev);
