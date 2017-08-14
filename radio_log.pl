@@ -5,7 +5,7 @@ use POSIX qw(strftime);
 use FindBin;
 BEGIN { unshift @INC, "$FindBin::Bin/lib" }
 
-use parselog qw(parselog);
+use parselog qw(parselog selectlog);
 
 # Customize log file location and minimum log level
 my $log = Mojo::Log->new(path => './log/mojo.log', level => 'info');
@@ -179,7 +179,9 @@ my @raw_data_label = (
 
 get '/raw' => sub {
 	my $self  = shift;
-	my %database = parselog();
+	my @filelist = selectlog();
+	my %database = parselog(@filelist);
+
 	$self->stash(raw_data_label => \@raw_data_label);
 	$self->stash(raw_database => { %database });
 } => 'rawdata';
