@@ -1,6 +1,15 @@
 use Mojolicious::Lite;
-use POSIX qw(strftime);
+use Mojo::Log;
 
+use POSIX qw(strftime);
+use FindBin;
+BEGIN { unshift @INC, "$FindBin::Bin/lib" }
+
+use parselog qw(parselog);
+
+# Customize log file location and minimum log level
+my $log = Mojo::Log->new(path => './log/mojo.log', level => 'info');
+	
 
 my @status_label = (
 	"Id",
@@ -24,6 +33,8 @@ my @dev_module1_map = (
 	{"label" => "Temp1"    , "value" => "-" },
 	{"label" => "Temp2"    , "value" => "-" },
 	{"label" => "Light"    , "value" => "-" },
+	{"label" => "Pressure" , "value" => "-" },
+	{"label" => "Press Temp", "value" => "-" },
 );
 
 my @dev_default_map = (
@@ -62,7 +73,7 @@ my @dev_map_available = (
 	\@dev_default_map,  # Module 7
 	\@dev_module1_map,  # Module 8
 	\@dev_default_map,  # Module 9
-	\@dev_default_map,  # Module 10
+	\@dev_module1_map,  # Module 10
 	\@dev_default_map,  # Module 11
 	\@dev_default_map,  # Module 12
 	\@dev_default_map,  # Module 13
@@ -75,6 +86,9 @@ get '/' => sub {
 	my $self  = shift;
 	#$self->stash(host => $self->req->url->to_abs->host);
 	#$self->stash(ua => $self->req->headers->user_agent);
+	#
+
+	$log->info("Prova\n");
 
 	# Get the last log file
 	my @log_file_list = ();
@@ -83,6 +97,7 @@ get '/' => sub {
 		while (my $file = readdir(DIR)) {
 			# Use a regular expression to ignore files beginning with a period
 			next if ($file =~ m/^\./);
+
 			push @log_file_list, $dir."/".$file;
 		}
 		closedir(DIR);
@@ -145,6 +160,29 @@ get '/' => sub {
 } => 'home';
 
 get '/uno' => 'graph';
+
+my @raw_data_label = (
+	"Id",
+	"Data",
+	"Ora",
+	"LQI",
+	"RSSI",
+	"Uptime",
+	"TempCPU",
+	"VrefCPU",
+	"NTC0",
+	"NTC1",
+	"PhotoRes",
+	"Pressure",
+	"TempPressure",
+);
+
+get '/raw' => sub {
+	my $self  = shift;
+	my %database = parselog();
+	$self->stash(raw_data_label => \@raw_data_label);
+	$self->stash(raw_database => { %database });
+} => 'rawdata';
 
 get '/json' => sub {
 	my $self = shift;
