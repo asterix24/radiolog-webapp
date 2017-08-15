@@ -115,7 +115,6 @@ get '/' => sub {
 
 } => 'home';
 
-get '/uno' => 'graph';
 
 my @raw_data_label = (
 	"Id",
@@ -142,13 +141,33 @@ get '/raw' => sub {
 	$self->stash(raw_database => { %database });
 } => 'rawdata';
 
+get '/graph' => 'graph';
 get '/json' => sub {
 	my $self = shift;
-	my @l = ();
-	for (my $i = 0; $i < 24; $i++) {
-		push @l, [ $i, rand(10)];
+
+	my @filelist = selectlog();
+	my %database = parselog(@filelist);
+	my @l;
+	foreach ($database{8}) {
+		foreach (@{$_}) {
+			push @l, [@$_[1], @$_[8]] if $_;
+		}
 	}
-	$self->render(json => [[@l]]);
+	my @m;
+	foreach ($database{10}) {
+		foreach (@{$_}) {
+			push @m, [@$_[1], @$_[8]] if $_;
+		}
+	}
+
+	my @n;
+	foreach ($database{0}) {
+		foreach (@{$_}) {
+			push @n, [@$_[1], @$_[8]] if $_;
+		}
+	}
+
+	$self->render(json => [[@l], [@m], [@n]]);
 };
 
 app->start;

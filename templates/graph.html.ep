@@ -36,16 +36,14 @@ plot1 = $.jqplot('chartdiv', [], {
 	axes: {
 		series: { shadowSize: 0 },
 		yaxis:  {
+			max: 4500,
 			label:'Temp[C]',
-			min: 0,
-			max: 12,
-			labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 			},
 		xaxis:  {
+			renderer:$.jqplot.DateAxisRenderer,
 			label:'Time[h]',
- 			min:0,
-			max: 26,
-			labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+			labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 		}
 	},
 	highlighter: {
@@ -54,6 +52,10 @@ plot1 = $.jqplot('chartdiv', [], {
 	},
 	cursor: {
 		show: true
+	},
+	legend :{
+		show: true,
+		labels: ['8', '10', '0']
 	}
 	});
 }
