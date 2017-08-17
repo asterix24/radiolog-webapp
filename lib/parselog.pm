@@ -43,7 +43,6 @@ sub selectlog {
 sub parselog {
   my @fileList = @_;
   my %database;
-  print "->", @fileList, $#fileList, "\n";
   foreach my $file (@fileList) {
 	  # Use a regular expression to ignore files beginning with a period
 	  if (open(FILE, "<", $file)) {
