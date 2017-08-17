@@ -16,16 +16,20 @@ sub startup {
 
   # Migrate to latest version if necessary
   my $path = $self->home->child('migrations', 'radiologdata.sql');
-  $self->log->info($path);
   $self->pg->migrations->name('radiologdata')->from_file($path)->migrate();
-
 
   # Router
   my $r = $self->routes;
 
   # Normal route to controller
   $r->get('/')->to('dashboard#home');
+  $r->post('/import')->to('importer#add');
+
+
+  # Test
   $r->get('/pg')->to('example#welcome');
+  $r->get('/form')->to('example#welcome');
+  $r->post('/not')->to('example#not');
 }
 
 1;
