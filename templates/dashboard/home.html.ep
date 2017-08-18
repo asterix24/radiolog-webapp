@@ -1,54 +1,9 @@
 % layout 'default';
-% content_for dashboard => begin
-<div class="row">
-	<% if (not @$dev_map) {%>
-		<h3 class="sub-header">Nessuno modulo</h3>
-	<% } %>
-
-	<% foreach my $dev_id (@$dev_map) { %>
-	<div class="col-xs-6 col-sm-3">
-		<table class="table table-condensed table-bordered table-striped">
-			<thead>
-				<tr>
-					<th class="text-center" colspan=2>Device</th>
-				</tr>
-			</thead>
-			<tbody>
-				<% foreach my $a (@{$dev_id}) { %>
-					<%	foreach my $h ($a) { %>
-					<tr>
-						<td><strong>label</strong></td>
-						<td><%=  $h %></td>
-					</tr>
-					<% 	} %>
-				<% 	} %>
-			</tbody>
-		</table>
-	</div>
-	<% }  %>
-</div>
+% content_for body => begin
+<section class="section">
+  <div class="container">
+    <h1 class="title"> Test.</h1>
+    <p class="subtitle">Test page</p>
+  </div>
+</section>
 % end
-
-% content_for table => begin
-<div class="table-responsive">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<% foreach (@{$status_label}) { %>
-					<th><%= $_ %></th>
-				<% } %>
-			</tr>
-		</thead>
-		<tbody>
-		<% foreach my $status (@{$status_dev}) {  %>
-		<tr>
-			<% foreach (@{$status}) { %>
-			<td><%=  $_ %></td>
-			<% } %>
-		</tr>
-		<% } %>
-		</tbody>
-	</table>
-</div>
-% end
-
