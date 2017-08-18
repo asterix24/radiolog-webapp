@@ -1,9 +1,37 @@
 % layout 'default';
 % content_for body => begin
-<section class="section">
-  <div class="container">
-    <h1 class="title"> Test.</h1>
-    <p class="subtitle">Test page</p>
+
+% my ($flag, $ncol) = (0,1);
+% for my $idx (0..scalar @{$id}-1) {
+%   if (!($idx % 4)) {
+  <div class="tile is-ancestor">
+%     $flag = 1;
+%   }
+    <div class="tile is-parent is-3">
+      <article class="tile is-child notification is-success box">
+        <p class="title"><%= $idx %></p>
+        <p class="subtitle">Subtitle</p>
+      </article>
+    </div>
+%	if ($ncol == 4) {
+%   print "end\n";
+	  </div>
+%		$ncol = 1;
+%		$flag = 0;
+%	}
+%	$ncol++ if $flag;
+% }
+% if ($flag) {
+	</div>
+% }
+
+<div class="tile is-ancestor">
+  <div class="tile is-parent">
+  <article class="tile is-child notification is-info box">
+	<p class="title">Status</p>
+	<p class="subtitle">Subtitle</p>
+  </article>
   </div>
-</section>
+</div>
+
 % end
