@@ -30,6 +30,7 @@ sub startup {
   $r->get('/pg')->to('example#welcome');
   $r->get('/form')->to('example#welcome');
   $r->post('/not')->to('example#not');
+  $r->get('/test')->to('example#test');
 }
 
 1;

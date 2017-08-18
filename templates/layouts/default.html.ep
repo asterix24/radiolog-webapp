@@ -1,104 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="images/favicon.ico">
-
-    <title>Dashboard Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="css/dashboard.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- JQPLOT -->
-    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
-    <link rel="stylesheet" type="text/css" href="css/jquery.jqplot.css" />
+    <title>RadioLog System.</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css">
   </head>
-
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
+    <div class="container is-fluid">
+      <nav class="navbar">
+
+        <div class="navbar-brand">
+          <a class="navbar-item" href="http://radiolog.asterix.cloud">
+            <img src="images/radiolog-logo.png" alt="Symple radio logging home system" width="112" height="28">
+          </a>
+
+          <a class="navbar-item fa fa-tachometer" aria-hidden="true" href="/">Dashboard</a>
+          <a class="navbar-item fa fa-area-chart" aria-hidden="true" href="graph">Graph</a>
+          <a class="navbar-item fa fa-database" hria-hidden="true" ref="history"> Raw Data</a>
+          <a class="navbar-item fa fa-history" aria-hidden="true" href="history"> History</a>
+
+          <div class="navbar-burger">
+            <span>Graphics</span>
+            <span>Raw Data</span>
+            <span>History</span>
+          </div>
         </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Help</a></li>
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
+      </nav>
+      %= content body => begin
+      % end
+      </section>
+      <footer class="footer">
+        <div class="container">
+          <div class="content has-text-centered">
+            <p>
+            <strong>RadioLog</strong> by Ing. Basile Daniele &lt;asterix24@gmail.com&gt; The source code is licensed
+            <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"> GPL 3.0v <a>
+            </p>
+            <p>
+            <a class="icon" href="https://github.com/asterix24/radiolog-webapp"> <i class="fa fa-github"></i> </a>
+            </p>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
-
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="/">Overview</a></li>
-            <li><a href="raw">Raw Data</a></li>
-            <li><a href="graph">Graphic</a></li>
-            <li><a href="#">Export</a></li>
-          </ul>
-        </div>
-
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          %= content header => begin
-          % end
-        </div>
-
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Dashboard</h1>
-          %= content dashboard => begin
-          % end
-          <h2 class="sub-header">Section title</h2>
-          %= content table => begin
-          % end
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Bootstrap core JavaScript ================================ -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/docs.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.jqplot.min.js"></script>
-    <script src="js/plugins/jqplot.json2.min.js"></script>
-    <script src="js/plugins/jqplot.highlighter.min.js"></script>
-    <script src="js/plugins/jqplot.cursor.min.js"></script>
-    <script src="js/plugins/jqplot.canvasTextRenderer.min.js"></script>
-    <script src="js/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-    <script src="js/plugins/jqplot.dateAxisRenderer.min.js"></script>
-    %= content script => begin
-    % end
-    <!-- Placed at the end of the document so the pages load faster -->
   </body>
 </html>
-
