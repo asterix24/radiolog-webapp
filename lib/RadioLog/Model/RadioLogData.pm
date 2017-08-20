@@ -32,7 +32,7 @@ sub last {
 
   my @data;
   foreach my $id (@addr) {
-    my $result = $self->pg->db->select('radiologdata', undef, {address => $id}, { -asc => 'timestamp' });
+    my $result = $self->pg->db->select('radiologdata', undef, {address => $id}, { -desc => 'timestamp' });
     push @data, $result->hash;
     $result->finish;
   }
