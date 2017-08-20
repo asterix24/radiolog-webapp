@@ -7,7 +7,7 @@ create table if not exists radiologdata (
   timestamp     timestamp,
   lqi           int,
   rssi          int,
-  uptime        timestamp,
+  uptime        int,
   tempcpu       int,
   vrefcpu       int,
   ntc0          int,
