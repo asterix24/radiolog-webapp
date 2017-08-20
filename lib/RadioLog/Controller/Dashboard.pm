@@ -10,13 +10,6 @@ my @colors = (
   "is-success"
 );
 
-my @status_keys = (
-  "timestamp",
-  "lqi",
-  "rssi",
-  "uptime"
-);
-
 # This action will render a template
 sub home {
   my $self = shift;
