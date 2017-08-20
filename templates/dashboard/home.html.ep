@@ -8,13 +8,56 @@
 %     $flag = 1;
 %   }
     <div class="tile is-parent is-3">
-      <article class="tile is-child notification is-success box">
-        <p class="title"><%= $idx %></p>
-        <p class="subtitle">Subtitle</p>
+      <article class="tile is-child notification <%= $color->[rand(scalar @{$color} - 1)] %> box">
+        <p class="title"><%= $rowdata->[$idx]->{address} %></p>
+        <p class="subtitle"><%= $rowdata->[$idx]->{label} %></p>
+        <table class="table is-narrow is-fullwidth">
+          % my $data = $rowdata->[$idx]->{timestamp};
+          % my $time = $rowdata->[$idx]->{timestamp};
+          %# Take only data field
+          % $data =~ s/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})\.\d+/$1/g;
+          %# Take only time field, removing milliseconds.
+          % $time =~ s/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})\.\d+/$2/g;
+          <tr>
+            <th>Date</th>
+            <td><%= $data %></td>
+          </tr>
+          <tr>
+            <th>Time</th>
+            <td><%= $time %></td>
+          </tr>
+          <tr>
+            <th>CPU Vref</th>
+            <td><%= $rowdata->[$idx]->{vrefcpu}/1000. %>V</td>
+          </tr>
+          <tr>
+            <th>CPU Temp</th>
+            <td><%= $rowdata->[$idx]->{tempcpu}/100.0 %>&ordm;C</td>
+          </tr>
+          <tr>
+            <th>NTC0</th>
+            <td><%= $rowdata->[$idx]->{ntc0} /100.0 %>&ordm;C</td>
+          </tr>
+          <tr>
+            <th>NTC1</th>
+            <td><%= $rowdata->[$idx]->{ntc1} /100.0 %>&ordm;C</td>
+          </tr>
+          <tr>
+            <th>Photores</th>
+            <td><%= $rowdata->[$idx]->{photores} %></td>
+          </tr>
+          <tr>
+            <th>Pressure</th>
+            <td><%= $rowdata->[$idx]->{pressure} / 1e+3 %>mbar</td>
+          </tr>
+          <tr>
+            <th>Pressure Temp</th>
+            <td><%= $rowdata->[$idx]->{temppressure}/100.0 %>&ordm;C</td>
+          </tr>
+        </table>
       </article>
     </div>
 %	if ($ncol == 4) {
-%   print "end\n";
 	  </div>
 %		$ncol = 1;
 %		$flag = 0;
@@ -28,8 +71,40 @@
 <div class="tile is-ancestor">
   <div class="tile is-parent">
   <article class="tile is-child notification is-info box">
-	<p class="title">Status</p>
-	<p class="subtitle">Subtitle</p>
+  <p class="title">Status</p>
+  <p class="subtitle">Module status and link</p>
+  <table class="table is-narrow is-fullwidth">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Address</th>
+        <th>Label</th>
+        <th>LQI</th>
+        <th>RSSI</th>
+        <th>Uptime</th>
+      </tr>
+    </thead>
+    <tfoot>
+% for my $idx (0..scalar @{$id}-1) {
+%   my $time = $rowdata->[$idx]->{timestamp};
+%   $time =~ s/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})\.\d+/$1 $2/g;
+      <tr>
+        <td><%= $time %></td>
+        <th><%= $rowdata->[$idx]->{address}%> </th>
+        <td><%= $rowdata->[$idx]->{label} %> </td>
+        <td><%= $rowdata->[$idx]->{lqi}%> </td>
+        <td><%= $rowdata->[$idx]->{rssi}%> dBm</td>
+        % my ($d, $h, $m, $s) = (0,0,0,0);
+        % my $sec = $rowdata->[$idx]->{uptime};
+        % $d = int($sec/(24*60*60));
+        % $h = ($sec/(60*60))%24;
+        % $m = ($sec/60)%60;
+        % $s = $sec%60;
+        <td><%= $d %>g, <%= $h %>h, <%= $m %>min, <%= $s %> sec.</td>
+      </tr>
+% }
+    </tfoot>
+  </table>
   </article>
   </div>
 </div>

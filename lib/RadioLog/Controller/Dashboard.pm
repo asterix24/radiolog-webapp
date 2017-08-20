@@ -2,44 +2,34 @@ package RadioLog::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
 use parselog qw(parselog selectlog);
 
-my @status_label = (
-	"Id",
-	"Data",
-	"Ora",
-	"LQI",
-	"RSSI",
-	"Up time",
+my @colors = (
+  "is-primary",
+  "is-warning",
+  "is-info",
+  "is-danger",
+  "is-success"
+);
+
+my @status_keys = (
+  "timestamp",
+  "lqi",
+  "rssi",
+  "uptime"
 );
 
 # This action will render a template
 sub home {
   my $self = shift;
 
-  # Render template "example/welcome.html.ep" with message
-  my @filelist = selectlog();
-  my %database = parselog(@filelist);
+  $self->stash(title => "Dashboard");
+  $self->stash(subtitle => "Radiolog system on-line module");
 
-  # Fill data to render.
-  my @dev_map = ();
-  my @status_dev = ();
-  foreach my $id (keys %database) {
-	  my @l;
-	  foreach ($database{$id}) {
-		  push @l, $id;
-		  foreach (@{$_}[-1]) {
-			  foreach (@{$_}) {
-				push @l, $_ if $_;
-			  }
-		  }
-	  }
-	  push @dev_map, [@l];
-  }
+  my @ids = $self->rldata->address();
+  my $row = $self->rldata->last(@ids);
 
-  $self->stash(dev_map => \@dev_map);
-  $self->stash(status_label => \@status_label);
-  $self->stash(status_dev => \@status_dev);
 
-  $self->render();
+  $self->stash(color => [@colors]);
+  $self->render(id => [@ids], rowdata => $row);
 }
 
 1;
