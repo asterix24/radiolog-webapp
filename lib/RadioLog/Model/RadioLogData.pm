@@ -15,6 +15,31 @@ sub find {
   return $self->pg->db->select('radiologdata', undef, {id => $id})->hash;
 }
 
+sub address {
+  my $self = shift;
+  my $result = $self->pg->db->query('select DISTINCT address from radiologdata order by address asc');
+
+  my @ret;
+  while (my $next = $result->hash) {
+    push @ret, $next->{address};
+  }
+
+  return @ret;
+}
+
+sub last {
+  my ($self, @addr) = @_;
+
+  my @data;
+  foreach my $id (@addr) {
+    my $result = $self->pg->db->select('radiologdata', undef, {address => $id}, { -asc => 'timestamp' });
+    push @data, $result->hash;
+    $result->finish;
+  }
+
+  return [@data];
+}
+
 sub remove {
   my ($self, $id) = @_;
   $self->pg->db->delete('radiologdata', {id => $id});
