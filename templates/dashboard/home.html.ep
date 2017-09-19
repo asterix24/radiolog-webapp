@@ -8,7 +8,7 @@
 %     $flag = 1;
 %   }
     <div class="tile is-parent is-3">
-      <article class="tile is-child notification <%= $color->[rand(scalar @{$color} - 1)] %> box">
+      <article class="tile is-child box">
         <p class="title"><%= $rowdata->[$idx]->{address} %></p>
         <p class="subtitle"><%= $rowdata->[$idx]->{label} %></p>
         <table class="table is-narrow is-fullwidth">
@@ -70,7 +70,7 @@
 
 <div class="tile is-ancestor">
   <div class="tile is-parent">
-  <article class="tile is-child notification is-info box">
+  <article class="tile is-child box">
   <p class="title">Status</p>
   <p class="subtitle">Module status and link</p>
   <table class="table is-narrow is-fullwidth">
