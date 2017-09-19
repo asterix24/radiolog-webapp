@@ -1,13 +1,13 @@
 package RadioLog::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
-use parselog qw(parselog selectlog);
 
 my @colors = (
   "is-primary",
   "is-warning",
   "is-info",
   "is-danger",
-  "is-success"
+  "is-success",
+  "is-light"
 );
 
 # This action will render a template

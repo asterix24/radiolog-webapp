@@ -19,13 +19,13 @@
             <img src="images/radiolog-logo.png" alt="Symple radio logging home system" width="112" height="28">
           </a>
 
-          <a class="navbar-item fa fa-tachometer" aria-hidden="true" href="/">Dashboard</a>
-          <a class="navbar-item fa fa-area-chart" aria-hidden="true" href="graph">Graph</a>
-          <a class="navbar-item fa fa-database" hria-hidden="true" ref="history"> Raw Data</a>
-          <a class="navbar-item fa fa-history" aria-hidden="true" href="history"> History</a>
+          <a class="navbar-item fa fa-tachometer" aria-hidden="true" href="/">&nbsp;Dashboard</a>
+          <a class="navbar-item fa fa-area-chart" aria-hidden="true" href="chart">&nbsp;Charts</a>
+          <a class="navbar-item fa fa-database" hria-hidden="true" ref="raw">&nbsp;Raw Data</a>
+          <a class="navbar-item fa fa-history" aria-hidden="true" href="history">&nbsp;History</a>
 
           <div class="navbar-burger">
-            <span>Graphics</span>
+            <span>Chart</span>
             <span>Raw Data</span>
             <span>History</span>
           </div>
