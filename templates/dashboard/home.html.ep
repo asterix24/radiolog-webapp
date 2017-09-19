@@ -85,10 +85,19 @@
       </tr>
     </thead>
     <tfoot>
+% use Time::localtime;
+% my $tm=localtime;
+% my $today = sprintf( "%04d-%02d-%02d", $tm->year + 1900, $tm->mon + 1, $tm->mday);
 % for my $idx (0..scalar @{$id}-1) {
 %   my $time = $rowdata->[$idx]->{timestamp};
+%   my $data = $rowdata->[$idx]->{timestamp};
 %   $time =~ s/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})\.\d+/$1 $2/g;
+%   $data =~ s/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})\.\d+/$1/g;
+%    if ($today eq $data) {
       <tr>
+%     } else {
+      <tr class="is-selected">
+%     }
         <td><%= $time %></td>
         <th><%= $rowdata->[$idx]->{address}%> </th>
         <td><%= $rowdata->[$idx]->{label} %> </td>
