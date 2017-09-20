@@ -2,7 +2,7 @@ package RadioLog::Controller::Chart;
 use Mojo::Base 'Mojolicious::Controller';
 
 # This action will render a template
-sub chart_home {
+sub home {
   my $self = shift;
 
   $self->stash(title => "Charts");
@@ -14,23 +14,19 @@ sub chart_home {
   $self->render(id => [@ids], rowdata => $row);
 }
 
-sub chartid {
+sub show {
   my $self = shift;
-
+  my $id = $self->req->param('addr');
   $self->stash(title => "Charts ID");
-  #$self->stash(subtitle => "Measure chart of id.");
-  $self->stash(subtitle => $self->param('address'));
+  $self->stash(subtitle => "Moduel Address ".$id);
 
-  $self->redirect_to('chart');
-}
+  print $id."\n";
+  my $row = $self->rldata->find($id);
+  foreach my $i (keys $row) {
+    print $i."->".$row->{$i}."\n";
+  }
 
-sub chart {
-  my $self = shift;
-
-  $self->stash(title => "Charts ID");
-  $self->stash(subtitle => "Measure chart of id.");
-
-  $self->render('chart');
+  $self->render();
 }
 
 1;

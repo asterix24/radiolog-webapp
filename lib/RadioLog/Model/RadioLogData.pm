@@ -18,12 +18,10 @@ sub find {
 sub address {
   my $self = shift;
   my $result = $self->pg->db->query('select DISTINCT address from radiologdata order by address asc');
-
   my @ret;
   while (my $next = $result->hash) {
     push @ret, $next->{address};
   }
-
   return @ret;
 }
 
@@ -36,7 +34,6 @@ sub last {
     push @data, $result->hash;
     $result->finish;
   }
-
   return [@data];
 }
 

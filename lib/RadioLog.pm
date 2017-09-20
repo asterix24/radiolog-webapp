@@ -24,12 +24,10 @@ sub startup {
   # Normal route to controller
   $r->get('/')->to('dashboard#home');
 
-  $r->get('/chart')->to('chart#chart_home')->name('homechart');
-  $r->post('/chartid')->to('chart#chartid')->name('createchart');
-  $r->get('/showchart')->to('chart#chart')->name('showchart');
+  $r->get('/chart')->to('chart#home')->name('homechart');
+  $r->get('/show')->to('chart#show')->name('showchart');
 
   $r->post('/import')->to('importer#add');
-
 
   # Test
   $r->get('/pg')->to('example#welcome');

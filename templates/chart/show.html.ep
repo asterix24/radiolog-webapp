@@ -1,0 +1,4 @@
+% layout 'default';
+% content_for body => begin
+Grafico
+% end
