@@ -27,6 +27,9 @@ sub startup {
   $r->get('/chart')->to('chart#home')->name('homechart');
   $r->get('/show')->to('chart#show')->name('showchart');
 
+  $r->websocket('/data')->to('chart#data')->name('ws_datachart');
+
+  # Endpoint to store data to db
   $r->post('/import')->to('importer#add');
 
   # Test

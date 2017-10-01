@@ -25,6 +25,16 @@ sub address {
   return @ret;
 }
 
+sub graphdata {
+  my $self = shift;
+  my $address = shift;
+  my $key = shift;
+
+  my $result = $self->pg->db->query('select timestamp, '.$key.' from radiologdata where address='.$address.' order by timestamp asc');
+
+  return $result->arrays;
+}
+
 sub last {
   my ($self, @addr) = @_;
 
