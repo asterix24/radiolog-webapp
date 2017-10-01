@@ -1,24 +1,188 @@
 % layout 'default';
 % content_for body => begin
-  %= form_for showchart => begin
-   <div class="container is-fluid">
-    <div class="field has-addons">
-      <div class="control is-expanded">
-        <div class="select is-fullwidth">
-          <select name="addr">
-            % for my $idx (0..scalar @{$id}-1) {
-            <option value="<%= $idx%>"><%= $idx %>: 
-            <%= $rowdata->[$idx]->{label} %>, 
-            <%= $rowdata->[$idx]->{description} %>
-            </option>
-            % }
-          </select>
-        </div>
+<div class="container is-fluid">
+  <div class="box">
+    <label class="label">Paramenter Selection</label>
+    <div class="field is-grouped is-grouped-multiline">
+      <label class="checkbox button is-light">
+        <input type="checkbox" id="lqi" name="lqi">
+        LQI
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" id="rssi" name="rssi">
+        RSSI [dBm]
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="tempcpu" id="tempcpu">
+        CPU Temperature
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="vrefcpu" id="vrefcpu">
+        CPU Vreference
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="ntc0" id="ntc0">
+        NTC0 Temperature
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="ntc1" id="ntc1">
+        NTC1 Temperature
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="photores" id="photores">
+        Photoresistence
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="pressure" id="pressure">
+        Pressure
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="temppressure" id="temppressure">
+        Pressure Tempertature
+      </label>
+    </div>
+    <br>
+    <label class="label">Data Selection</label>
+    <div class="field is-grouped is-grouped-multiline">
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="today" id="today">
+        To Day
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="yesterday" id="yesterday">
+        Yesterday
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="month" id="month">
+        Last Month
+      </label>
+      <label class="checkbox button is-light">
+        <input type="checkbox" name="year" id="year">
+        Last Year
+      </label>
+    </div>
+    <div class="field">
+      <label class="label">Data Start</label>
+      <div class="control has-icons-left has-icons-right">
+        <input id="data_start" class="input" type="text" placeholder="dd/mm/yyyy">
+        <span class="icon is-small is-left">
+          <i class="fa fa-calendar"></i>
+        </span>
       </div>
-      <div class="control">
-        <button type="submit" class="button is-primary">Choose</button>
+      <label class="label">Data Stop</label>
+      <div class="control has-icons-left has-icons-right">
+        <input id="data_stop" class="input" type="text" placeholder="dd/mm/yyyy">
+        <span class="icon is-small is-left">
+          <i class="fa fa-calendar"></i>
+        </span>
       </div>
     </div>
+    <label class="label">Module selection</label>
+    <div class="field is-grouped has-addons is-expanded">
+      <div class="select is-fullwidth">
+        <select id="module_address" name="addr">
+          % for my $idx (0..scalar @{$id}-1) {
+          <option value="<%= $idx%>"><%= $idx %>:
+          <%= $rowdata->[$idx]->{label} %>,
+          <%= $rowdata->[$idx]->{description} %>
+          </option>
+          % }
+        </select>
+      </div>
+      <p class="control">
+      <a id='data_send' type="submit" class="button is-primary">Plot</a>
+      </p>
+    </div>
   </div>
-  % end
+</div>
+<br>
+<div class="container is-fluid">
+  <div class="box">
+    <div id="chartdiv"></div>
+  </div>
+</div>
+
+% end
+
+% content_for import_script => begin
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="jqplot/jquery.jqplot.js"></script>
+<script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.js"></script>
+% end
+
+% content_for script => begin
+<script>
+
+var plot;
+var plot_data;
+
+$(function () {
+  var connection_on = false;
+  var ws = new WebSocket('<%= $ws_url %>');
+
+  ws.onopen = function () {
+    console.log('Connection opened');
+    connection_on = true;
+  };
+
+  ws.onclose = function () {
+    console.log('Connection closed');
+    connection_on = false;
+  };
+
+  ws.onmessage = function (msg) {
+    if (!connection_on) {
+      ws = new WebSocket('<%= $ws_url %>');
+    }
+    res = JSON.parse(msg.data);
+    plot_data = res['temperature'];
+    update_graph(plot_data);
+  };
+
+  $('#data_send').click(function() {
+    var plot_settings = JSON.stringify({
+      "module_addr": $('#module_address :selected').val(),
+      "param": $("input[type='checkbox']:checked" ).map(function() {
+        return $(this).val();
+      }).get()
+    });
+
+    console.log(plot_settings);
+    ws.send(plot_settings)
+  });
+});
+
+function update_graph(data) {
+  if (plot) {
+    plot.destroy();
+  }
+  console.log(data);
+  if (typeof data !== 'undefined' && data.length > 0) {
+    plot = $.jqplot('chartdiv', [data], {
+      title: "Radio logger",
+      axes: {
+        series: { shadowSize: 0 },
+        yaxis:  {
+          labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+        },
+        xaxis:  {
+          renderer:$.jqplot.DateAxisRenderer,
+          label:'Time[h]',
+          labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+        }
+      },
+      highlighter: {
+        show: true,
+        sizeAdjust: 7.5
+      },
+      cursor: {
+        show: true
+      },
+    });
+  } else {
+    $('#chartdiv').append("<p>No data..</p>")
+  }
+};
+
+</script>
 % end
