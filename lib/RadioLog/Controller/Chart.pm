@@ -23,12 +23,7 @@ sub show {
   $self->stash(title => "Charts ID");
   $self->stash(subtitle => "Moduel Address ".$id);
 
-  print $id."\n";
   my $row = $self->rldata->find($id);
-  foreach my $i (keys $row) {
-    print $i."->".$row->{$i}."\n";
-  }
-
   $self->render();
 }
 
@@ -52,11 +47,16 @@ sub data {
           $self->app->log->debug(sprintf '%s -> %s', $_, $msg->{$_});
         }
 
-        my $row = $self->rldata->graphdata(0, "tempcpu");
-        for (keys %$clients) {
-          $clients->{$_}->send({json => {
-                temperature => [ @{$row} ],
-                module_addr => $message
+        my @data_graph = ();
+        foreach (@{$msg->{param}}) {
+          $self->app->log->debug("Get Param: ".$_);
+          push @data_graph, $self->rldata->graphdata($msg->{module_addr}, [$_]);
+        }
+
+        for my $cli (keys %$clients) {
+          $clients->{$cli}->send({json => {
+                data => [@data_graph],
+                module_addr => $msg->{module_addr}
               }
           });
         }
