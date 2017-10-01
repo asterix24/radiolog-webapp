@@ -108,6 +108,8 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="jqplot/jquery.jqplot.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.js"></script>
+<script type="text/javascript" src="jqplot/plugins/jqplot.cursor.js"></script>
+<script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.js"></script>
 % end
 
 % content_for script => begin
@@ -135,7 +137,7 @@ $(function () {
       ws = new WebSocket('<%= $ws_url %>');
     }
     res = JSON.parse(msg.data);
-    plot_data = res['temperature'];
+    plot_data = res['data'];
     update_graph(plot_data);
   };
 
@@ -143,11 +145,9 @@ $(function () {
     var plot_settings = JSON.stringify({
       "module_addr": $('#module_address :selected').val(),
       "param": $("input[type='checkbox']:checked" ).map(function() {
-        return $(this).val();
-      }).get()
+          return $(this).attr('id');
+        }).get()
     });
-
-    console.log(plot_settings);
     ws.send(plot_settings)
   });
 });
@@ -156,9 +156,8 @@ function update_graph(data) {
   if (plot) {
     plot.destroy();
   }
-  console.log(data);
   if (typeof data !== 'undefined' && data.length > 0) {
-    plot = $.jqplot('chartdiv', [data], {
+    plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",
       axes: {
         series: { shadowSize: 0 },
@@ -176,7 +175,8 @@ function update_graph(data) {
         sizeAdjust: 7.5
       },
       cursor: {
-        show: true
+        show: true,
+        zoom:true
       },
     });
   } else {
