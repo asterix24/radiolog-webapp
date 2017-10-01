@@ -28,10 +28,10 @@ sub address {
 sub graphdata {
   my $self = shift;
   my $address = shift;
-  my $key = shift;
+  my $keys = shift;
 
-  my $result = $self->pg->db->query('select timestamp, '.$key.' from radiologdata where address='.$address.' order by timestamp asc');
-
+  splice @{$keys}, 0, 0, 'timestamp';
+  my $result = $self->pg->db->select('radiologdata', $keys, {address => $address}, {-asc => 'timestamp'});
   return $result->arrays;
 }
 
