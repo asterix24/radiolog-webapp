@@ -32,13 +32,16 @@ sub data {
   $self->app->log->debug("Input data:");
   $self->app->log->debug($self->req->json->{module_addr});
   my @data_graph = ();
+  my @label = ();
   foreach (@{$self->req->json->{param}}) {
     $self->app->log->debug("Get Param: ".$_);
+    push @label, $_;
     push @data_graph, $self->rldata->graphdata($self->req->json->{module_addr}, [$_]);
   }
 
   $self->render(json => {
         data => [@data_graph],
+        label => [@label],
         module_addr => $self->req->json->{module_addr}
       }
     );

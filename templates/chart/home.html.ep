@@ -98,7 +98,7 @@
 <br>
 <div class="container is-fluid">
   <div class="box">
-    <div id="chartdiv"></div>
+    <div id="chartdiv" style="height:800px"></div>
   </div>
 </div>
 
@@ -116,12 +116,12 @@
 <script>
 var plot;
 var plot_data;
+var plot_label;
 
 function update_graph(data) {
   if (plot) {
     plot.destroy();
   }
-  console.log(data);
   if (typeof data !== 'undefined' && data.length > 0) {
     plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",
@@ -138,12 +138,15 @@ function update_graph(data) {
       },
       highlighter: {
         show: true,
-        sizeAdjust: 7.5
       },
       cursor: {
         show: true,
         zoom:true
       },
+      legend: {
+        show: true,
+        labels: plot_label
+      }
     });
   } else {
     $('#chartdiv').append("<p>No data..</p>")
@@ -164,6 +167,7 @@ $(function () {
         }).get()
       }),
       success: function(msg) {
+        plot_label = msg['label'];
         var newArray = new Array();
         for (var i = 0; i < msg['data'].length; i++) {
           if (msg['data'][i].length > 0) {
