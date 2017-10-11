@@ -13,11 +13,11 @@
         RSSI [dBm]
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="tempcpu" id="tempcpu">
+        <input type="checkbox" name="tempcpu" id="tempcpu" checked>
         CPU Temperature
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="vrefcpu" id="vrefcpu">
+        <input type="checkbox" name="vrefcpu" id="vrefcpu" checked>
         CPU Vreference
       </label>
       <label class="checkbox button is-light">
@@ -114,48 +114,14 @@
 
 % content_for script => begin
 <script>
-
 var plot;
 var plot_data;
-
-$(function () {
-  var connection_on = false;
-  var ws = new WebSocket('<%= $ws_url %>');
-
-  ws.onopen = function () {
-    console.log('Connection opened');
-    connection_on = true;
-  };
-
-  ws.onclose = function () {
-    console.log('Connection closed');
-    connection_on = false;
-  };
-
-  ws.onmessage = function (msg) {
-    if (!connection_on) {
-      ws = new WebSocket('<%= $ws_url %>');
-    }
-    res = JSON.parse(msg.data);
-    plot_data = res['data'];
-    update_graph(plot_data);
-  };
-
-  $('#data_send').click(function() {
-    var plot_settings = JSON.stringify({
-      "module_addr": $('#module_address :selected').val(),
-      "param": $("input[type='checkbox']:checked" ).map(function() {
-          return $(this).attr('id');
-        }).get()
-    });
-    ws.send(plot_settings)
-  });
-});
 
 function update_graph(data) {
   if (plot) {
     plot.destroy();
   }
+  console.log(data);
   if (typeof data !== 'undefined' && data.length > 0) {
     plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",
@@ -184,5 +150,32 @@ function update_graph(data) {
   }
 };
 
+$(function () {
+  $('#data_send').click(function() {
+    $.ajax({
+      async: true,
+      url: "<%= $data_url %>",
+      dataType:"json",
+      type: "POST",
+      data: JSON.stringify({
+        "module_addr": $('#module_address :selected').val(),
+        "param": $("input[type='checkbox']:checked" ).map(function() {
+          return $(this).attr('id');
+        }).get()
+      }),
+      success: function(msg) {
+        var newArray = new Array();
+        for (var i = 0; i < msg['data'].length; i++) {
+          if (msg['data'][i].length > 0) {
+            newArray.push(msg['data'][i]);
+          }
+        }
+        update_graph(newArray);
+      },
+      complete: function(msg) {
+      },
+    })
+  });
+});
 </script>
 % end

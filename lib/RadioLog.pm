@@ -7,6 +7,9 @@ use RadioLog::Model::RadioLogData;
 sub startup {
   my $self = shift;
 
+  $self->app->log->level("debug");
+  $self->app->log->info("===  RadioLog System ===");
+
   # Load configuration from hash returned by "my_app.conf"
   my $config = $self->plugin('Config');
 
@@ -27,7 +30,7 @@ sub startup {
   $r->get('/chart')->to('chart#home')->name('homechart');
   $r->get('/show')->to('chart#show')->name('showchart');
 
-  $r->websocket('/data')->to('chart#data')->name('ws_datachart');
+  $r->post('/data')->to('chart#data')->name('datachart');
 
   # Endpoint to store data to db
   $r->post('/import')->to('importer#add');

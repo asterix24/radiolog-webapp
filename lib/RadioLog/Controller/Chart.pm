@@ -8,7 +8,7 @@ sub home {
 
   $self->stash(title => "Charts");
   $self->stash(subtitle => "Measure chart.");
-  $self->stash(ws_url => $self->url_for('ws_datachart')->to_abs);
+  $self->stash(data_url => $self->url_for('datachart')->to_abs);
 
 
   my @ids = $self->rldata->address();
@@ -27,45 +27,21 @@ sub show {
   $self->render();
 }
 
-my $clients = {};
-
 sub data {
-    my $self = shift;
-    $self->app->log->debug(sprintf 'Client connected: %s:%s', $self->tx->remote_address,
-              $self->tx->remote_port);
+  my $self = shift;
+  $self->app->log->debug("Input data:");
+  $self->app->log->debug($self->req->json->{module_addr});
+  my @data_graph = ();
+  foreach (@{$self->req->json->{param}}) {
+    $self->app->log->debug("Get Param: ".$_);
+    push @data_graph, $self->rldata->graphdata($self->req->json->{module_addr}, [$_]);
+  }
 
-    # Save connect request.
-    my $id = sprintf "%s", $self->tx;
-    $clients->{$id} = $self->tx;
-
-    my $module_addr = 0;
-    $self->on(message => sub {
-        my ($self, $message) = @_;
-        $self->app->log->debug(sprintf 'Data %s', $message);
-        my $msg = decode_json($message);
-        for (keys %{$msg}) {
-          $self->app->log->debug(sprintf '%s -> %s', $_, $msg->{$_});
-        }
-
-        my @data_graph = ();
-        foreach (@{$msg->{param}}) {
-          $self->app->log->debug("Get Param: ".$_);
-          push @data_graph, $self->rldata->graphdata($msg->{module_addr}, [$_]);
-        }
-
-        for my $cli (keys %$clients) {
-          $clients->{$cli}->send({json => {
-                data => [@data_graph],
-                module_addr => $msg->{module_addr}
-              }
-          });
-        }
-    });
-
-    $self->on(finish => sub {
-        $self->app->log->debug('Client disconnected');
-        delete $clients->{$id};
-    });
+  $self->render(json => {
+        data => [@data_graph],
+        module_addr => $self->req->json->{module_addr}
+      }
+    );
 }
 
 1;
