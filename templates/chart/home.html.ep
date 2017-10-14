@@ -98,7 +98,7 @@
 <br>
 <div class="container is-fluid">
   <div class="box">
-    <div id="chartdiv" style="height:800px"></div>
+    <div id="chartdiv" style="height:500px"></div>
   </div>
 </div>
 

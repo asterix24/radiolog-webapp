@@ -18,18 +18,31 @@ sub home {
 
 sub data {
   my $self = shift;
-  $self->app->log->debug("Input data:");
-  $self->app->log->debug($self->req->json->{module_addr});
+  $self->app->log->debug("Input data: ".$self->req->json->{module_addr});
 
   my @data_graph = ();
   my @label = ();
+
   foreach (@{$self->req->json->{param}}) {
     $self->app->log->debug("Get Param: ".$_);
-    push @label, $_;
     my $data = $self->rldata->graphdata($self->req->json->{module_addr}, [$_]);
-    if ($_ eq 'pressure') {
-      @{$data} = map($_ / 1000.0, @{$data});
+
+    my $label = "";
+    if (/pressure/) {
+      @{$data} = map([$_->[0], $_->[1] / 1000.0], @{$data});
+      $label = "Pressure [mbar]";
+    } elsif (/ntc?|tempcpu/) {
+      @{$data} = map([$_->[0], $_->[1] / 100.0], @{$data});
+      $label = "$_ [C]";
+    } elsif (/vrefcpu/) {
+      @{$data} = map([$_->[0], $_->[1] / 1000.0], @{$data});
+      $label = "Vref [V]";
+    } elsif (/photores/) {
+      @{$data} = map([$_->[0], $_->[1] / 100.0], @{$data});
+      $label = "Photoresistence [LSB]";
     }
+
+    push @label, $label;
     push @data_graph, $data;
   }
 
