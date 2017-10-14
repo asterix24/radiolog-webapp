@@ -82,9 +82,9 @@
       <div class="select is-fullwidth">
         <select id="module_address" name="addr">
           % for my $idx (0..scalar @{$id}-1) {
-            <option value="<%= $id->[$idx]%>">Address[<%= $id->[$idx] %>]:
-            <%= $rowdata->[$idx]->{label} %>,
-            <%= $rowdata->[$idx]->{description} %>
+          <option value="<%= $id->[$idx]%>">Address[<%= $id->[$idx] %>]:
+          <%= $rowdata->[$idx]->{label} %>,
+          <%= $rowdata->[$idx]->{description} %>
           </option>
           % }
         </select>
@@ -111,6 +111,8 @@
 <script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.js"></script>
+<script type="text/javascript" src="jqplot/plugins/jqplot.trendline.js"></script>
+<script type="text/javascript" src="jqplot/plugins/jqplot.enhancedLegendRenderer.js"></script>
 % end
 
 % content_for script => begin
@@ -125,10 +127,11 @@ function update_graph(data) {
   }
 
   if (typeof data !== 'undefined' && data.length > 0) {
+    $.jqplot.config.enablePlugins = true;
+
     plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",
       axes: {
-        series: { shadowSize: 0 },
         yaxis:  {
           labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
         },
@@ -136,10 +139,22 @@ function update_graph(data) {
           renderer:$.jqplot.DateAxisRenderer,
           label:'Time[h]',
           labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+          tickOptions: {
+            formatString: '%d/%m/%y'
+          },
         }
       },
       highlighter: {
         show: true,
+        sizeAdjust: 10,
+        tooltipLocation: 'n',
+        tooltipAxes: 'y',
+        useAxesFormatters: false,
+        // you can have anything here
+        tooltipFormatString: '<b><i><span style="color:red;">%.2f</span></i></b>',
+        tooltipContentEditor: function (str, seriesIndex, pointIndex, plot) {
+          return '<b><span style="color:blue;">' + plot.legend.labels[seriesIndex] + ': </span></b>' + str;
+        }
       },
       cursor: {
         show: true,
