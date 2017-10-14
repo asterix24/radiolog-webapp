@@ -17,12 +17,15 @@ sub find {
 
 sub address {
   my $self = shift;
-  my $result = $self->pg->db->query('select DISTINCT address from radiologdata order by address asc');
-  my @ret;
-  while (my $next = $result->hash) {
-    push @ret, $next->{address};
+  my $result = $self->pg->db->select('radiologdata', ['address'], undef, { -asc => 'address' });
+
+  my %address;
+  foreach my $idx (@{$result->hashes}) {
+    foreach (keys %{$idx}) {
+      $address{$idx->{address}} = "";
+    }
   }
-  return @ret;
+  return [keys %address];
 }
 
 sub graphdata {
