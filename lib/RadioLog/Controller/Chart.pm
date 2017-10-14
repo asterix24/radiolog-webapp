@@ -17,34 +17,29 @@ sub home {
   $self->render(id => [@ids], rowdata => $row);
 }
 
-sub show {
-  my $self = shift;
-  my $id = $self->req->param('addr');
-  $self->stash(title => "Charts ID");
-  $self->stash(subtitle => "Moduel Address ".$id);
-
-  my $row = $self->rldata->find($id);
-  $self->render();
-}
-
 sub data {
   my $self = shift;
   $self->app->log->debug("Input data:");
   $self->app->log->debug($self->req->json->{module_addr});
+
   my @data_graph = ();
   my @label = ();
   foreach (@{$self->req->json->{param}}) {
     $self->app->log->debug("Get Param: ".$_);
     push @label, $_;
-    push @data_graph, $self->rldata->graphdata($self->req->json->{module_addr}, [$_]);
+    my $data = $self->rldata->graphdata($self->req->json->{module_addr});
+    if ($_ eq 'pressure') {
+      @{$data} = map($_ / 1000.0, @{$data});
+    }
+    push (@data_graph, $data, [$_]);
   }
 
   $self->render(json => {
-        data => [@data_graph],
-        label => [@label],
-        module_addr => $self->req->json->{module_addr}
-      }
-    );
+      data => [@data_graph],
+      label => [@label],
+      module_addr => $self->req->json->{module_addr}
+    }
+  );
 }
 
 1;

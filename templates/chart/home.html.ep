@@ -82,7 +82,7 @@
       <div class="select is-fullwidth">
         <select id="module_address" name="addr">
           % for my $idx (0..scalar @{$id}-1) {
-          <option value="<%= $idx%>"><%= $idx %>:
+          <option value="<%= $idx%>">Address[<%= $idx %>]:
           <%= $rowdata->[$idx]->{label} %>,
           <%= $rowdata->[$idx]->{description} %>
           </option>
@@ -110,6 +110,7 @@
 <script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.js"></script>
+<link rel="stylesheet" type="text/css" href="jqplot/jquery.jqplot.min.css" />
 % end
 
 % content_for script => begin
@@ -162,6 +163,8 @@ $(function () {
       type: "POST",
       data: JSON.stringify({
         "module_addr": $('#module_address :selected').val(),
+        "data_start": $('#data_start').val(),
+        "data_stop": $('#data_stop').val(),
         "param": $("input[type='checkbox']:checked" ).map(function() {
           return $(this).attr('id');
         }).get()
