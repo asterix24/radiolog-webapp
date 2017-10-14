@@ -25,7 +25,7 @@ sub address {
       $address{$idx->{address}} = "";
     }
   }
-  return [keys %address];
+  return (keys %address);
 }
 
 sub graphdata {
