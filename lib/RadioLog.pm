@@ -28,8 +28,6 @@ sub startup {
   $r->get('/')->to('dashboard#home');
 
   $r->get('/chart')->to('chart#home')->name('homechart');
-  $r->get('/show')->to('chart#show')->name('showchart');
-
   $r->post('/data')->to('chart#data')->name('datachart');
 
   # Endpoint to store data to db
