@@ -105,12 +105,12 @@
 % end
 
 % content_for import_script => begin
+<link rel="stylesheet" type="text/css" href="jqplot/jquery.jqplot.min.css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="jqplot/jquery.jqplot.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.dateAxisRenderer.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.cursor.js"></script>
 <script type="text/javascript" src="jqplot/plugins/jqplot.highlighter.js"></script>
-<link rel="stylesheet" type="text/css" href="jqplot/jquery.jqplot.min.css" />
 % end
 
 % content_for script => begin
@@ -123,6 +123,7 @@ function update_graph(data) {
   if (plot) {
     plot.destroy();
   }
+
   if (typeof data !== 'undefined' && data.length > 0) {
     plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",

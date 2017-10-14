@@ -26,11 +26,11 @@ sub data {
   foreach (@{$self->req->json->{param}}) {
     $self->app->log->debug("Get Param: ".$_);
     push @label, $_;
-    my $data = $self->rldata->graphdata($self->req->json->{module_addr});
+    my $data = $self->rldata->graphdata($self->req->json->{module_addr}, [$_]);
     if ($_ eq 'pressure') {
       @{$data} = map($_ / 1000.0, @{$data});
     }
-    push (@data_graph, $data, [$_]);
+    push @data_graph, $data;
   }
 
   $self->render(json => {
