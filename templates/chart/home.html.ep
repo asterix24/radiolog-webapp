@@ -150,10 +150,9 @@ function update_graph(data) {
         tooltipLocation: 'n',
         tooltipAxes: 'y',
         useAxesFormatters: false,
-        // you can have anything here
         tooltipFormatString: '<b><i><span style="color:red;">%.2f</span></i></b>',
         tooltipContentEditor: function (str, seriesIndex, pointIndex, plot) {
-          return '<b><span style="color:blue;">' + plot.legend.labels[seriesIndex] + ': </span></b>' + str;
+          return '<b><span style="color:blue;">' + plot.legend.labels[seriesIndex] + '</span><br><span>X: </span><span style="color:green;">' + plot.data[seriesIndex][pointIndex][0] + '</span></b><br>Y: ' + str;
         }
       },
       cursor: {
