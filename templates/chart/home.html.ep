@@ -82,9 +82,9 @@
       <div class="select is-fullwidth">
         <select id="module_address" name="addr">
           % for my $idx (0..scalar @{$id}-1) {
-          <option value="<%= $idx%>">Address[<%= $idx %>]:
-          <%= $rowdata->[$idx]->{label} %>,
-          <%= $rowdata->[$idx]->{description} %>
+            <option value="<%= $id->[$idx]%>">Address[<%= $id->[$idx] %>]:
+            <%= $rowdata->[$idx]->{label} %>,
+            <%= $rowdata->[$idx]->{description} %>
           </option>
           % }
         </select>

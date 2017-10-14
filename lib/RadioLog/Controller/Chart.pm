@@ -10,7 +10,6 @@ sub home {
   $self->stash(subtitle => "Measure chart.");
   $self->stash(data_url => $self->url_for('datachart')->to_abs);
 
-
   my @ids = $self->rldata->address();
   my $row = $self->rldata->last(@ids);
 

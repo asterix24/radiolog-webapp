@@ -21,11 +21,9 @@ sub address {
 
   my %address;
   foreach my $idx (@{$result->hashes}) {
-    foreach (keys %{$idx}) {
-      $address{$idx->{address}} = "";
-    }
+      $address{$idx->{address}} = 0;
   }
-  return (keys %address);
+  return sort (keys %address);
 }
 
 sub graphdata {
