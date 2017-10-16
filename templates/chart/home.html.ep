@@ -5,39 +5,39 @@
     <label class="label">Paramenter Selection</label>
     <div class="field is-grouped is-grouped-multiline">
       <label class="checkbox button is-light">
-        <input type="checkbox" id="lqi" name="lqi">
+        <input type="checkbox" id="chart_param" name="lqi">
         LQI
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" id="rssi" name="rssi">
+        <input type="checkbox" id="param" name="rssi">
         RSSI [dBm]
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="tempcpu" id="tempcpu" checked>
+        <input type="checkbox" id="param" name="tempcpu" checked>
         CPU Temperature
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="vrefcpu" id="vrefcpu" checked>
+        <input type="checkbox" id="param" name="vrefcpu" checked>
         CPU Vreference
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="ntc0" id="ntc0">
+        <input type="checkbox" id="param" name="ntc0">
         NTC0 Temperature
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="ntc1" id="ntc1">
+        <input type="checkbox" id="param" name="ntc1">
         NTC1 Temperature
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="photores" id="photores">
+        <input type="checkbox" id="param" name="photores">
         Photoresistence
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="pressure" id="pressure">
+        <input type="checkbox" id="param" name="pressure">
         Pressure
       </label>
       <label class="checkbox button is-light">
-        <input type="checkbox" name="temppressure" id="temppressure">
+        <input type="checkbox" id="param" name="temppressure">
         Pressure Tempertature
       </label>
     </div>
@@ -61,15 +61,16 @@
         Last Year
       </label>
     </div>
-    <div class="field">
-      <label class="label">Data Start</label>
+    <br>
+    <div class="field is-grouped">
+      <label class="label">Data Start&nbsp;</label>
       <div class="control has-icons-left has-icons-right">
         <input id="data_start" class="input" type="text" placeholder="dd/mm/yyyy">
         <span class="icon is-small is-left">
           <i class="fa fa-calendar"></i>
         </span>
       </div>
-      <label class="label">Data Stop</label>
+      <label class="label">Data Stop&nbsp;</label>
       <div class="control has-icons-left has-icons-right">
         <input id="data_stop" class="input" type="text" placeholder="dd/mm/yyyy">
         <span class="icon is-small is-left">
@@ -78,20 +79,19 @@
       </div>
     </div>
     <label class="label">Module selection</label>
-    <div class="field is-grouped has-addons is-expanded">
-      <div class="select is-fullwidth">
-        <select id="module_address" name="addr">
-          % for my $idx (0..scalar @{$id}-1) {
-          <option value="<%= $id->[$idx]%>">Address[<%= $id->[$idx] %>]:
-          <%= $rowdata->[$idx]->{label} %>,
-          <%= $rowdata->[$idx]->{description} %>
-          </option>
-          % }
-        </select>
-      </div>
-      <p class="control">
-      <a id='data_send' type="submit" class="button is-primary">Plot</a>
-      </p>
+    <div class="field is-grouped is-grouped-multiline">
+      % for my $idx (0..scalar @{$id}-1) {
+      <label class="checkbox button is-light">
+        % my $checked = "";
+        % $checked = "checked" if ($idx == 0);
+        <input type="checkbox" name="<%= $id->[$idx]%>" id="module_addr" <%=$checked %> >
+        [<%= $id->[$idx]%>]<%= $rowdata->[$idx]->{label} %>
+      </label>
+      % }
+    </div>
+    <br>
+    <div class="field is-expanded">
+      <a id='data_send' type="submit" class="button is-primary is-large">  Plot  </a>
     </div>
   </div>
 </div>
@@ -122,6 +122,7 @@ var plot_data;
 var plot_label;
 
 function update_graph(data) {
+  console.log(data);
   if (plot) {
     plot.destroy();
   }
@@ -177,11 +178,13 @@ $(function () {
       dataType:"json",
       type: "POST",
       data: JSON.stringify({
-        "module_addr": $('#module_address :selected').val(),
+        "module_addr": $("#module_addr:checked" ).map(function() {
+          return $(this).attr('name');
+        }).get(),
         "data_start": $('#data_start').val(),
         "data_stop": $('#data_stop').val(),
-        "param": $("input[type='checkbox']:checked" ).map(function() {
-          return $(this).attr('id');
+        "param": $("#param:checked" ).map(function() {
+          return $(this).attr('name');
         }).get()
       }),
       success: function(msg) {
