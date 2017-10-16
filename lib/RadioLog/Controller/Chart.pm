@@ -18,18 +18,14 @@ sub home {
 
 sub data {
   my $self = shift;
-  $self->app->log->debug("Input data");
 
   my @data_graph = ();
   my @label = ();
 
   foreach my $addr (@{$self->req->json->{module_addr}}) {
-    print "-> ".$addr."\n";
     foreach (@{$self->req->json->{param}}) {
-      print "....$_\n";
       $self->app->log->debug("Get Param: ".$_);
       my $data = $self->rldata->graphdata($addr, [$_]);
-
       my $label = "";
       if (/pressure/) {
         @{$data} = map([$_->[0], $_->[1] / 1000.0], @{$data});
