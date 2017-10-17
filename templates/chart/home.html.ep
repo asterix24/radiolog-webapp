@@ -99,6 +99,10 @@
 <div class="container is-fluid">
   <div class="box">
     <div id="chartdiv" style="height:500px"></div>
+    <div id="chart_button" class="field is-expanded">
+      <a id='reset_zoom' type="submit" class="button is-info">Reset Zoom</a>
+    </div>
+
   </div>
 </div>
 
@@ -132,6 +136,13 @@ function update_graph(data) {
 
     plot = $.jqplot('chartdiv', data, {
       title: "Radio logger",
+      series: [
+        { yaxis:'y2axis'},
+        { yaxis:'y3axis'},
+        { yaxis:'y4axis'},
+        { yaxis:'y5axis'},
+        { yaxis:'y6axis'},
+      ],
       axes: {
         yaxis:  {
           labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
@@ -165,12 +176,21 @@ function update_graph(data) {
         labels: plot_label
       }
     });
+    $('#chart_button').show();
   } else {
     $('#chartdiv').append("<p>No data..</p>")
   }
 };
 
 $(function () {
+  $('#chart_button').hide();
+
+  $('#reset_zoom').click(function() {
+    if (plot) {
+      plot.resetZoom();
+    }
+  });
+
   $('#data_send').click(function() {
     $.ajax({
       async: true,

@@ -37,7 +37,6 @@ sub data {
         @{$data} = map([$_->[0], $_->[1] / 1000.0], @{$data});
         $label = "Vref [V]";
       } elsif (/photores/) {
-        @{$data} = map([$_->[0], $_->[1] / 100.0], @{$data});
         $label = "Photoresistence [LSB]";
       }
 
