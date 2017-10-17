@@ -43,36 +43,28 @@
     </div>
     <br>
     <label class="label">Data Selection</label>
-    <div class="field is-grouped is-grouped-multiline">
-      <label class="checkbox button is-light">
-        <input type="checkbox" name="today" id="today">
-        To Day
-      </label>
-      <label class="checkbox button is-light">
-        <input type="checkbox" name="yesterday" id="yesterday">
-        Yesterday
-      </label>
-      <label class="checkbox button is-light">
-        <input type="checkbox" name="month" id="month">
-        Last Month
-      </label>
-      <label class="checkbox button is-light">
-        <input type="checkbox" name="year" id="year">
-        Last Year
-      </label>
+    <div class="field is-grouped-multiline">
+      <a id='today' type="submit" class="button is-info"> To Day</a>
+      <a id='month' type="submit" class="button is-info">This Month</a>
+      <a id='year' type="submit" class="button is-info">This Year</a>
     </div>
     <br>
+    % use Time::localtime;
+    % my $tm = localtime;
+    % my $ytm = localtime((time() - (24 * 60 * 60)));
+    % my $today = sprintf("%04d-%02d-%02d", $tm->year + 1900, $tm->mon + 1, $tm->mday);
+    % my $yesterday = sprintf("%04d-%02d-%02d", $ytm->year + 1900, $ytm->mon + 1, $ytm->mday);
     <div class="field is-grouped">
       <label class="label">Data Start&nbsp;</label>
       <div class="control has-icons-left has-icons-right">
-        <input id="data_start" class="input" type="text" placeholder="dd/mm/yyyy">
+        <input id="data_start" class="input" type="text" placeholder="dd/mm/yyyy" value="<%=$yesterday%>">
         <span class="icon is-small is-left">
           <i class="fa fa-calendar"></i>
         </span>
       </div>
       <label class="label">Data Stop&nbsp;</label>
       <div class="control has-icons-left has-icons-right">
-        <input id="data_stop" class="input" type="text" placeholder="dd/mm/yyyy">
+        <input id="data_stop" class="input" type="text" placeholder="dd/mm/yyyy" value="<%=$today%>">
         <span class="icon is-small is-left">
           <i class="fa fa-calendar"></i>
         </span>
@@ -182,8 +174,49 @@ function update_graph(data) {
   }
 };
 
+function fmt_date(date) {
+  var dd = date.getDate();
+  var mm = date.getMonth() + 1; //January is 0!
+  var yyyy = date.getFullYear();
+  if(dd < 10) {
+    dd = '0'+ dd
+  }
+  if(mm < 10) {
+    mm = '0' + mm
+  }
+  return yyyy + '-' +  mm + '-' + dd;
+}
+
 $(function () {
   $('#chart_button').hide();
+
+
+  $('#today').click(function() {
+    today = fmt_date(new Date());
+    $('#data_start').val(today);
+    $('#data_stop').val(today);
+  });
+
+  $('#month').click(function() {
+    m = new Date();
+    mm = m.getMonth() + 1;
+    yyyy = m.getFullYear();
+
+    if(mm < 10) {
+      mm = '0' + mm
+    }
+
+    $('#data_start').val(yyyy + '-' + mm + '-01');
+    $('#data_stop').val(yyyy + '-' + mm + '-31');
+  });
+
+
+  $('#year').click(function() {
+    y = new Date();
+    y = y.getFullYear();
+    $('#data_start').val(y + '-01-01');
+    $('#data_stop').val(y + '-12-31');
+  });
 
   $('#reset_zoom').click(function() {
     if (plot) {

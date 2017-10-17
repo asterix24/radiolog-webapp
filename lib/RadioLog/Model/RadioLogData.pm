@@ -30,9 +30,21 @@ sub graphdata {
   my $self = shift;
   my $address = shift;
   my $keys = shift;
+  my $data_start = shift;
+  my $data_stop = shift;
 
   splice @{$keys}, 0, 0, 'timestamp';
-  my $result = $self->pg->db->select('radiologdata', $keys, {address => $address}, {-asc => 'timestamp'});
+  my $result = $self->pg->db->select('radiologdata',
+    $keys,
+    {
+      address => $address,
+      timestamp => {
+        '>=' => $data_start,
+        '<=' => $data_stop
+      }
+    },
+    {-asc => 'timestamp'}
+  );
   return $result->arrays;
 }
 

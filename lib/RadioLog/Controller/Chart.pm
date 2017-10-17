@@ -22,10 +22,16 @@ sub data {
   my @data_graph = ();
   my @label = ();
 
+  $self->app->log->debug($self->req->json->{data_start});
+  $self->app->log->debug($self->req->json->{data_stop});
+
   foreach my $addr (@{$self->req->json->{module_addr}}) {
     foreach (@{$self->req->json->{param}}) {
       $self->app->log->debug("Get Param: ".$_);
-      my $data = $self->rldata->graphdata($addr, [$_]);
+      my $data = $self->rldata->graphdata($addr, [$_],
+        $self->req->json->{data_start},
+        $self->req->json->{data_stop}
+      );
       my $label = "";
       if (/pressure/) {
         @{$data} = map([$_->[0], $_->[1] / 1000.0], @{$data});
